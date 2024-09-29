@@ -1,11 +1,11 @@
-
 streamlit~=1.38.0
 PyPDF2~=3.0.1
 scikit-learn
 matplotlib
-
 pandas~=2.2.3
 plotly~=5.24.1
 altair~=5.4.1
 numpy~=2.1.1
 openai~=0.28
+seaborn==0.12.2
+

@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -23,6 +25,11 @@ This dashboard explores and detects bias in AI models used in healthcare,
 and provides educational resources on how to mitigate these biases. 
 Analyze datasets, learn about bias in AI, and explore the impact of underrepresentation.
 """)
+# Feedback Section in Sidebar
+st.sidebar.title("Feedback")
+feedback = st.sidebar.text_area("We value your feedback!", "")
+if st.sidebar.button("Submit Feedback"):
+    st.sidebar.write("Thank you for your feedback!")
 
 # Embed the CSS for consistent styling
 background_image = """
@@ -153,6 +160,7 @@ with tabs[0]:
                 <p>Developers unaware of bias in their models</p>
             </div>
         </div>
+        <h1> </h1>
         """, unsafe_allow_html=True)
 
     # Generate continuous data for ages 18 to 80 for both male and female participation
@@ -285,31 +293,72 @@ with tabs[2]:
 
     # Introduction to Bias in AI
     st.markdown("""
-        ## What is Bias in AI?
-        Bias in AI refers to the systematic favoritism or prejudice shown in AI models due to skewed training data, algorithms, or both.
-        It can result in unequal treatment of certain groups, leading to real-world consequences in areas like healthcare, finance, and law enforcement.
+            ## What is Bias in AI?
+            Bias in AI refers to the systematic favoritism or prejudice shown in AI models due to skewed training data, algorithms, or both.
+            In healthcare, AI bias can manifest as unequal treatment or misdiagnosis for certain patient groups, often due to underrepresentation in datasets.
         """)
 
-    # Types of Bias in AI
+    # Types of Bias in AI (Healthcare Focused)
     st.markdown("""
-        ## Types of Bias in AI
-        1. **Selection Bias**: Occurs when the sample data isn't representative of the population it serves.
-        2. **Confirmation Bias**: Favoring information that confirms existing beliefs or stereotypes.
-        3. **Algorithmic Bias**: Arises when algorithms make decisions that systematically disadvantage certain groups.
-        4. **Reporting Bias**: Involves reporting only certain types of outcomes, which skews data and algorithms.
+            ## Types of Bias in Healthcare AI
+            1. **Selection Bias**: Occurs when healthcare datasets underrepresent certain demographics. For example, AI models trained on data predominantly from men may perform poorly when diagnosing women.
+            2. **Confirmation Bias**: AI systems can reinforce healthcare stereotypes, such as assuming higher rates of certain conditions in particular ethnic groups.
+            3. **Algorithmic Bias**: Healthcare AI may favor certain groups because of how models are built, leading to unequal predictions or recommendations.
+            4. **Reporting Bias**: In healthcare studies, selectively reporting results can skew AI models, reducing their effectiveness for diverse populations.
         """)
- # Hero Section with Call-to-Action Buttons
-    st.markdown("""
-        <div class="hero">
-            <a href="#" class="btn">Explore Bias</a>
-            <a href="#" class="btn">Learn More</a>
-            <a href="#" class="btn">Analyze Your Data</a>
-        </div>
-        """, unsafe_allow_html=True)
 
+    # Add more content in columns with images and text
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+        st.markdown("""
+            ### Impact of Bias in Healthcare AI
+            AI bias in healthcare can have life-altering consequences. For instance, AI models may misdiagnose patients from underrepresented groups, 
+            leading to inappropriate treatments. Minority groups may receive substandard care due to algorithms trained on non-representative datasets. 
+            This amplifies existing disparities in healthcare access and quality.
+            """)
+
+    with col2:
+        st.image('assets/balance.png', caption="Healthcare AI Bias", use_column_width=True)
+
+    col3, col4 = st.columns([2, 1])
+
+    with col3:
+        st.image('assets/bias.png', caption="Underrepresentation in Medical AI", use_column_width=True)
+
+    with col4:
+        st.markdown("""
+                    ### Why Underrepresentation in Medical Data Matters
+                    Medical AI models often rely on datasets that disproportionately contain data from certain groups, such as white males. 
+                    This lack of diversity can result in the system being less accurate for women or people of color. For example, skin cancer detection models may be less effective on darker skin tones, which can delay diagnosis and treatment.
+                    """)
+
+    col5, col6 = st.columns([2, 1])
+
+    with col5:
+        st.markdown("""
+            ### Addressing Bias in Healthcare AI
+            To mitigate bias, healthcare AI developers need to ensure datasets are representative of the population. This means including more data 
+            from women, racial minorities, and underrepresented age groups. Hospitals and researchers should collaborate to generate diverse data, while also applying fairness metrics to ensure equitable care for all.
+            """)
+
+    with col6:
+        st.image('assets/solutions.png', caption="Solutions to Bias in Healthcare AI", use_column_width=True)
+
+    # Hero Section with Call-to-Action Buttons for Further Reading
+    st.markdown("""
+            <div class="hero">
+                <a href="https://aif360.mybluemix.net/" class="btn" target="_blank">Explore AI Fairness 360</a>
+                <a href="https://fairlearn.org/" class="btn" target="_blank">Learn About Fairlearn</a>
+                <a href="https://developers.google.com/machine-learning/fairness-overview" class="btn" target="_blank">Google ML Fairness</a>
+            </div>
+            """, unsafe_allow_html=True)
 # Analyze Data tab (Tab 3)
 with tabs[3]:
-    st.title("Analyze Your Data for Bias")
+    # ChatGPT API key (replace with your own key)
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    # Streamlit app setup
+    st.title("Medical Study Bias Detector")
 
     # Upload CSV file
     uploaded_file = st.file_uploader("Upload Medical Study CSV", type="csv")
@@ -331,11 +380,12 @@ with tabs[3]:
                 {
                     "role": "user",
                     "content": f"""
+
                         Here is the dataset in CSV format:
                         ```
                         {csv_data}
                         ```                    
-                        Summarize the results, focusing on bias detection and analysis.
+                        For your output, write one short paragraph (maximum two sentences) of what is happening in this dataset, focusing on the results (for example, whether or not people responded to a new treatment, or whether or not a tumor is malignant or benign). Do not list the columns of the database.
                     """
                 }
             ]
@@ -395,6 +445,46 @@ with tabs[3]:
         return flags
 
 
+    # Dashboard plots for analysis
+    def plot_dashboard(data):
+        fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+        fig.patch.set_facecolor('black')
+
+        # Gender Distribution (Pie chart)
+        gender_distribution_data = data['Gender'].value_counts()
+        axs[0, 0].pie(gender_distribution_data, labels=gender_distribution_data.index, autopct='%1.1f%%',
+                      colors=['#1f77b4', '#ff7f0e'])
+        axs[0, 0].set_title('Gender Distribution', color='white')
+        axs[0, 0].set_facecolor('black')
+
+        # Age Group Distribution (Bar chart)
+        age_distribution_data = data['Age'].value_counts()
+        sns.barplot(x=age_distribution_data.index, y=age_distribution_data.values, ax=axs[0, 1], palette='Set2')
+        axs[0, 1].set_title('Age Group Distribution', color='white')
+        axs[0, 1].set_xlabel('Age Group', color='white')
+        axs[0, 1].set_ylabel('Count', color='white')
+        axs[0, 1].set_facecolor('black')
+
+        # Response Rate by Gender (Stacked bar chart)
+        response_by_gender = data.groupby(['Gender', 'Response']).size().reset_index(name='Count')
+        sns.barplot(x='Gender', y='Count', hue='Response', data=response_by_gender, ax=axs[1, 0], palette='coolwarm')
+        axs[1, 0].set_title('Response Rate by Gender', color='white')
+        axs[1, 0].set_ylabel('Count', color='white')
+        axs[1, 0].set_facecolor('black')
+
+        # Time on Medication by Age Group (Box plot)
+        sns.boxplot(x='Age', y='Time taking medication', data=data, hue='Gender', ax=axs[1, 1], palette='pastel')
+        axs[1, 1].set_title('Time on Medication by Age Group', color='white')
+        axs[1, 1].set_ylabel('Years on Medication', color='white')
+        axs[1, 1].set_facecolor('black')
+
+        # Adjust layout
+        plt.tight_layout()
+
+        # Render the dashboard in Streamlit
+        st.pyplot(fig)
+
+
     # Process CSV file and detect bias
     if uploaded_file:
         data = pd.read_csv(uploaded_file)
@@ -410,13 +500,12 @@ with tabs[3]:
         # Step 1: Bias report
         bias_flags = analyze_bias(data)
         if len(bias_flags) == 0:
-            st.button("No Bias detected.")
+            st.write("No Bias detected.")
         else:
-            st.button("Possible bias detected.")
-
-        st.subheader("Flags")
-        for idx, flag in enumerate(bias_flags, start=1):
-            st.write(f"{idx}. {flag}")
+            st.write("Possible bias detected.")
+            st.subheader("Flags")
+            for idx, flag in enumerate(bias_flags, start=1):
+                st.write(f"{idx}. {flag}")
 
         # Step 2: Demographics information
         st.subheader("Demographics Information")
@@ -428,43 +517,9 @@ with tabs[3]:
         st.subheader("Dataset Summary")
         st.write(bias_report)
 
-        # 2x2 Dashboard setup using Matplotlib for Streamlit
-
-        st.subheader("Bias Report Results")
-
-        # Set up the figure for Streamlit
-        fig, axs = plt.subplots(2, 2, figsize=(15, 12))
-
-        # Gender Distribution (Pie chart)
-        gender_distribution_data = data['Gender'].value_counts()
-        axs[0, 0].pie(gender_distribution_data, labels=gender_distribution_data.index, autopct='%1.1f%%',
-                      colors=['#66b3ff', '#99ff99'])
-        axs[0, 0].set_title('Gender Distribution')
-
-        # Age Group Distribution (Bar chart)
-        age_distribution_data = data['Age'].value_counts()
-        sns.barplot(x=age_distribution_data.index, y=age_distribution_data.values, ax=axs[0, 1], palette='Set2')
-        axs[0, 1].set_title('Age Group Distribution')
-        axs[0, 1].set_xlabel('Age Group')
-        axs[0, 1].set_ylabel('Count')
-
-        # Response Rate by Gender (Stacked bar chart)
-        response_by_gender = data.groupby(['Gender', 'Response']).size().reset_index(name='Count')
-        sns.barplot(x='Gender', y='Count', hue='Response', data=response_by_gender, ax=axs[1, 0], palette='coolwarm')
-        axs[1, 0].set_title('Response Rate by Gender')
-        axs[1, 0].set_ylabel('Count')
-
-        # Time on Medication by Age Group (Box plot)
-        sns.boxplot(x='Age', y='Time taking medication', data=data, hue='Gender', ax=axs[1, 1], palette='pastel')
-        axs[1, 1].set_title('Time on Medication by Age Group')
-        axs[1, 1].set_ylabel('Years on Medication')
-
-        # Adjust layout
-        plt.tight_layout()
-
-        # Render the dashboard in Streamlit
-        st.pyplot(fig)
-
+        # Render the dashboard
+        st.subheader("Dashboard")
+        plot_dashboard(data)
 # Quiz tab (replaces recommendations)
 with tabs[4]:
     st.title("Bias in AI Quiz")
