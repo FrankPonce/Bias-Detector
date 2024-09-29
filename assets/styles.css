@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 400 !important; /* Ensure all text defaults to normal weight */
+
+
+}
+
+/* Paragraph Styles */
+p {
+    color: rgb(251, 246, 240) !important;
+    font-weight: 400 !important; /* Ensure normal font weight */
+}
+
+/* Button Styles */
+.btn {
+    font-weight: 600 !important; /* Buttons should be slightly bolder */
+    padding: 1rem;
+    width: 10rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(255, 255, 255) !important;
+    background: rgba(80, 80, 80, 0.2) !important;
+    border: rgb(255, 255, 255) 0.15rem solid !important;
+    text-decoration: none;
+}
+
+.btn:hover {
+    cursor: pointer;
+    background: rgb(29, 29, 29) !important;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Stats Section */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+}
+
+.stat {
+    text-align: center;
+    width: 30%;
+}
+
+.stat h1 {
+    font-size: 56px;
+    color: rgb(251, 246, 240) !important;
+    font-weight: 500 !important; /* Set weight to match home.py */
+    margin-bottom: 10px;
+}
+
+.stat p {
+    font-size: 18px;
+    color: rgb(251, 246, 240) !important;
+    font-weight: 400 !important;
+}
+
+/* Title Styling */
+.title {
+    font-size: 3rem;
+    text-align: center;
+    color: rgb(251, 246, 240) !important;
+    font-weight: 500 !important; /* Set to match the appearance of home.py */
+    margin-top: 2rem;
+}
+
+.subtitle {
+    font-size: 1.75rem;
+    text-align: center;
+    color: rgb(251, 246, 240) !important;
+    font-weight: 400 !important; /* Ensure subtitle is not bold */
+    margin-bottom: 1rem;
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    margin-top: 80px;
+    color: rgb(251, 246, 240) !important;
+    font-weight: 400 !important;
+}
+
+/* Link styles for buttons */
+a.btn:link,
+a.btn:visited,
+a.btn:hover,
+a.btn:active {
+    color: rgb(255, 255, 255) !important;
+}
